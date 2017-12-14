@@ -10,7 +10,10 @@ The directory to watch for new files
 A HashTable containing the information which file name pattern should be moved to which folder
 
 .EXAMPLE
-Set-DownloadWatcher -Directory C:\Users\max\Downloads
+Set-DownloadWatcher -Directory C:\Users\Me\Downloads -Configuration @{ 
+        abc = "D:\dir\files";
+        bcd = "D:\dir\morefiles"
+    }
 #>
 function Set-DownloadWatcher {
     [CmdletBinding()]
