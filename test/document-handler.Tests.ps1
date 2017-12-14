@@ -1,11 +1,13 @@
-Import-Module -Name ..\src\document-handler.psm1 -Force
+Import-Module -Name $PSScriptRoot\..\src\document-handler.psm1 -Force
 
-$TestDir = "C:\Users\max\Downloads\test"
+$TestDir = $PSScriptRoot+"\tmp"
 
 Describe "Watcher moves files according to configuration" {
 
     BeforeEach {
-        Remove-Item -Path $TestDir -Recurse
+        if (Test-Path $TestDir) {
+            Remove-Item -Path $TestDir -Recurse
+        }
         New-Item -ItemType Directory -Path $TestDir
         New-Item -ItemType Directory -Path $TestDir\a
         New-Item -ItemType Directory -Path $TestDir\b
@@ -14,6 +16,10 @@ Describe "Watcher moves files according to configuration" {
             abc = $TestDir+"\a";
             bcd = $TestDir+"\b"
         }
+    }
+
+    AfterEach {
+        Remove-Item -Path $TestDir -Recurse
     }
 
     Context "If new file does not match any pattern" {
