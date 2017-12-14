@@ -16,51 +16,47 @@ function Set-DownloadWatcher {
     [CmdletBinding()]
 
     param (
-        [Parameter(Mandatory=$false)]
-        $Directory = "C:\Users\max\Downloads\test",
+        [Parameter(Mandatory = $true)]
+        $Directory,
 
-        [Parameter(Mandatory=$false)]
-        $Configuration = @{ 
-            abc = "C:\Users\max\Downloads\test\a";
-            bcd = "C:\Users\max\Downloads\test\b"
-        }
+        [Parameter(Mandatory = $true)]
+        $Configuration
     )
 
     process {
         # Wrap the data that should be passed to the callback function
         $messageData = @{
-            hashtable = $Configuration;
-            something = "abcsdasdfsaf"
+            hashtable = $Configuration
         }
 
         $watcher = New-Object IO.FileSystemWatcher $Directory -Property @{ 
             IncludeSubdirectories = $false
-            NotifyFilter          = [IO.NotifyFilters]'FileName, LastWrite'
+            NotifyFilter = [IO.NotifyFilters]'FileName, LastWrite'
         }
-
-        # Unregister any existing event subscriptions
-        Unregister-Event -SourceIdentifier FileCreated
+        
+        try {
+            Unregister-Event -SourceIdentifier FileCreated
+        }
+        catch [System.ArgumentException] {
+            Write-Host "Could not remove subscription." -BackgroundColor "Green"
+        }
 
         Register-ObjectEvent $watcher Created -SourceIdentifier FileCreated -MessageData $messageData -Action {
             Write-Host "Captured new event!"
             
             $path = $Event.SourceEventArgs.FullPath
             $name = $Event.SourceEventArgs.Name
-        
-            $Event.MessageData.hashtable.GetEnumerator() | ForEach-Object {
-                Write-Host "---->" $_.key
-                Write-Host "---->" $_.value
-                if ($name -match $_.key) {
-                    Write-Host "Found match - '$name' contains $_.key"
-                    Move-Item -Path $path -Destination $_.value
-                }
-            }
-        
             $changeType = $Event.SourceEventArgs.ChangeType
             $timeStamp = $Event.TimeGenerated
             Write-Host "The file '$name' was $changeType at $timeStamp"
-            Write-Host $path
-            #Move-Item $path -Destination $destination -Force -Verbose
+        
+            $Event.MessageData.hashtable.GetEnumerator() | ForEach-Object {
+                if ($name -match $_.key) {
+                    Write-Host "Found match: '$name' contains" $_.key -BackgroundColor "Blue"
+                    Move-Item -Path $path -Destination $_.value
+                    break
+                }
+            }
         }
     }
 }
