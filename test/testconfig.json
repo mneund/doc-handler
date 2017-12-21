@@ -1,4 +1,4 @@
 {
-    "abc": "a",
-    "bcd": "b"
+    "abc": "tmp\\a",
+    "bcd": "tmp\\b"
 }

@@ -92,10 +92,7 @@ Describe "Watcher also watches subdirectories if specified" {
         New-Item -ItemType Directory -Path $TestDir\a
         New-Item -ItemType Directory -Path $TestDir\b
 
-        Set-DownloadWatcher -Directory $TestDir -Configuration @{ 
-            abc = $TestDir+"\a";
-            bcd = $TestDir+"\b"
-        } -IncludeSubDirs $true
+        Set-DownloadWatcher -Directory $TestDir -ConfigFile $PSScriptRoot\testconfig.json -IncludeSubDirs $true
     }
 
     AfterEach {
