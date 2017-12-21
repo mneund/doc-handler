@@ -70,6 +70,7 @@ function Set-DownloadWatcher {
             $Event.MessageData.fileToPathMapping.GetEnumerator() | ForEach-Object {
                 if ($name -match $_.key) {
                     Write-Host "Found match: '$name' contains" $_.key". Moving it to " $_.value -BackgroundColor "Cyan"
+                    # TODO: Check if destination exists and is a path
                     Move-Item -Path $path -Destination $_.value
                     break
                 }

@@ -11,9 +11,9 @@ It reads a configuration from an configuration file in JSON format, observes the
 ```
 config.json
 {
-    "bank1": "D:\files\bank1",
-    "bank2": "D:\files\bank2",
-    "telekom": "D:\files\mobilfunk"
+    "bank1": "D:\\files\\bank1",
+    "bank2": "D:\\files\\bank2",
+    "telekom": "D:\\files\\mobilfunk"
 }
 ```
 
