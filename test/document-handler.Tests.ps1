@@ -12,7 +12,7 @@ Describe "Watcher moves files according to configuration" {
         New-Item -ItemType Directory -Path $TestDir\a
         New-Item -ItemType Directory -Path $TestDir\b
 
-        Set-DownloadWatcher -Directory $TestDir -ConfigFile $PSScriptRoot\testconfig.json
+        Add-DirectoryOberserver -Directory $TestDir -ConfigFile $PSScriptRoot\testconfig.json
     }
 
     AfterEach {
@@ -75,48 +75,6 @@ Describe "Watcher moves files according to configuration" {
             $filesInB.Count | Should Be 0
 
             $files = Get-ChildItem -Path $TestDir -File
-            $files.Count | Should Be 0
-        }
-
-    }
-
-}
-
-Describe "Watcher also watches subdirectories if specified" {
-
-    BeforeEach {
-        if (Test-Path $TestDir) {
-            Remove-Item -Path $TestDir -Recurse
-        }
-        New-Item -ItemType Directory -Path $TestDir
-        New-Item -ItemType Directory -Path $TestDir\a
-        New-Item -ItemType Directory -Path $TestDir\b
-
-        Set-DownloadWatcher -Directory $TestDir -ConfigFile $PSScriptRoot\testconfig.json -IncludeSubDirs $true
-    }
-
-    AfterEach {
-        Remove-Item -Path $TestDir -Recurse
-    }
-
-    Context "If file in subdir does match a pattern" {
-
-        It "Is moved" {
-            # 'testfile' does not have a matching pattern in configuration
-            $testSubDir = $TestDir+"\subdir"
-            New-Item -ItemType Directory -Path $testSubDir
-            New-Item -ItemType File -Path $testSubDir -Name "testbcdfileInSubDir"
-
-            # Timeout is needed to make sure the file has been moved in between
-            Start-Sleep 1
-
-            $filesInA = Get-ChildItem -Path $TestDir\a -File
-            $filesInA.Count | Should Be 0
-
-            $filesInB = Get-ChildItem -Path $TestDir\b -File
-            $filesInB.Count | Should Be 1
-
-            $files = Get-ChildItem -Path $testSubDir -File
             $files.Count | Should Be 0
         }
 

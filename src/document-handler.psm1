@@ -1,21 +1,25 @@
 <#
 .SYNOPSIS
 Registers a watcher for the folder specified in the parameter $Directory. This directory is then watched
-for new files, which then are moved as specified in the $Configuration HashTable
+for new files, which then are moved as specified in the $ConfigFile
 
 .PARAMETER Directory
 The directory to watch for new files
 
-.PARAMETER Configuration
+.PARAMETER ConfigFile
 A HashTable containing the information which file name pattern should be moved to which folder
 
 .EXAMPLE
-Set-DownloadWatcher -Directory C:\Users\Me\Downloads -Configuration @{ 
-        abc = "D:\dir\files";
-        bcd = "D:\dir\morefiles"
-    }
+Add-DirectoryOberserver -Directory C:\Users\Me\Downloads -ConfigFile .\configFile.json
+
+where configFile.json looks like
+
+{
+    "ab": "C:\\temp",
+    "hfjgkl": "D:\\data"
+}
 #>
-function Set-DownloadWatcher {
+function Add-DirectoryOberserver {
     [CmdletBinding()]
 
     param (
@@ -79,4 +83,4 @@ function Set-DownloadWatcher {
     }
 }
 
-Export-ModuleMember -Function Set-DownloadWatcher
+Export-ModuleMember -Function Add-DirectoryOberserver
